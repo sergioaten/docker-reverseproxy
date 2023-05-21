@@ -1,0 +1,25 @@
+version: '1'
+services:
+  nginx:
+    image: nginx:latest
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./sites:/etc/nginx/sites-available
+      - ./scripts:/docker-entrypoint.d/scripts
+    depends_on:
+      - python
+    networks:
+      - my_network
+  python:
+    image: sergioaten/python:gunicorn1.0
+    restart: always
+    hostname: ${APP_HOSTNAME}
+    volumes:
+      - ./app/app.py:/app/app.py
+    networks:
+      - my_network
+networks:
+  my_network:
+    driver: bridge
